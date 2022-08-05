@@ -1,7 +1,9 @@
-from posts.models import Post
+from posts.models import Group, Post
 from rest_framework import viewsets
 
-from.serializers import (PostSerializer)
+from .permissions import ReadOnly
+
+from.serializers import (PostSerializer, GroupSerializer)
 
 class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all()
@@ -9,3 +11,9 @@ class PostViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
+
+class GroupViewSet(viewsets.ModelViewSet):
+    queryset = Group.objects.all()
+    serializer_class = GroupSerializer
+    permission_classes = (ReadOnly, )
+    
