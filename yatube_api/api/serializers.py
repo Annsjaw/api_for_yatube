@@ -1,5 +1,5 @@
-from posts.models import Comment, Group, Post
-from rest_framework import serializers
+from posts.models import Comment, Follow, Group, Post, User
+from rest_framework import serializers, validators
 
 
 class GroupSerializer(serializers.ModelSerializer):
@@ -26,3 +26,24 @@ class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         fields = ('id', 'author', 'post', 'text', 'created')
         model = Comment
+
+
+class FollowSerializer(serializers.ModelSerializer):
+    user = serializers.SlugRelatedField(
+        read_only=True,
+        default=serializers.CurrentUserDefault(),
+        slug_field='username'
+    )
+    following = serializers.SlugRelatedField(
+        queryset=User.objects.all(), slug_field='username')
+
+    class Meta:
+        fields = ('user', 'following')
+        model = Follow
+        validators = [
+            validators.UniqueTogetherValidator(
+                queryset=Follow.objects.all(),
+                fields=['user', 'following'],
+                message='Вы уже подписаны на этого пользователя'
+            )
+        ]

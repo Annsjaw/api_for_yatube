@@ -25,3 +25,14 @@ class AuthorOrReadOnly(permissions.BasePermission):
         if request.method in permissions.SAFE_METHODS:
             return True
         return obj.author == request.user
+
+
+class GetOrPutAuthOnly(permissions.BasePermission):
+
+    message = 'К сожалению API не поддерживает редактирование подписок'
+
+    def has_permission(self, request, view):
+        return request.user.is_authenticated
+
+    def has_object_permission(self, request, view, obj):
+        return False
