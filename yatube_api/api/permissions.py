@@ -27,7 +27,7 @@ class AuthorOrReadOnly(permissions.BasePermission):
         return obj.author == request.user
 
 
-class GetOrPutAuthOnly(permissions.BasePermission):
+class GetOrPostAuthOnly(permissions.BasePermission):
 
     message = 'К сожалению API не поддерживает редактирование подписок'
 
