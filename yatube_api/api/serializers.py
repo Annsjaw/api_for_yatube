@@ -5,7 +5,7 @@ from rest_framework import serializers, validators
 class GroupSerializer(serializers.ModelSerializer):
 
     class Meta:
-        fields = fields = ('id', 'title', 'slug', 'description', 'posts')
+        fields = fields = ('id', 'title', 'slug', 'description')
         model = Group
 
 
@@ -36,6 +36,14 @@ class FollowSerializer(serializers.ModelSerializer):
     )
     following = serializers.SlugRelatedField(
         queryset=User.objects.all(), slug_field='username')
+
+    def validate(self, data):
+        user = self.context['request'].user
+        following = data['following']
+        if user == following:
+            raise serializers.ValidationError(
+                'Нельзя подписаться на самого себя')
+        return data
 
     class Meta:
         fields = ('user', 'following')
